@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>거창고 대입 전형 한눈에 보기 (27·28)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#0b1220;--panel:#101a33;--line:#26344f;--ink:#eaf0fa;--muted:#8aaac8;
+--gyo:#ef4444;--jong:#2563eb;--non:#f0b429;--jeong:#16a34a;--geo:#a855f7;--nong:#14b8a6}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Pretendard',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;margin:0}
+.muted{color:#8aaac8}
+.card{transition:transform .1s}
+.card:hover{transform:translateY(-2px);z-index:5;position:relative}
+.flash{animation:fl .7s ease-in-out 4}
+@keyframes fl{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,0)}50%{box-shadow:0 0 0 3px rgba(168,85,247,.9)}}
+.unv{background:repeating-linear-gradient(45deg,#3a2a10,#3a2a10 5px,#4a3514 5px,#4a3514 10px)}
+@media print{
+ body{background:#fff!important;color:#000!important}
+ .no-print{display:none!important}
+ .cell,.strip{background:#fff!important;border-color:#999!important}
+ .card{box-shadow:none!important;background:#fff!important;break-inside:avoid}
+ .card b,.card span{color:#000!important}
+ .unv{background:#eee!important;color:#333!important}
+ .cell,.strip>.mb-2{break-inside:avoid}
+ .grid>div{break-inside:avoid}
+ [data-year]:not(.active){display:none!important}
+ .ttl,.qh,.muted{color:#000!important}
+ @page{size:A4 landscape;margin:7mm}
+}
+</style></head><body class="pb-16">
+<header class="no-print sticky top-0 z-40 backdrop-blur bg-[#0b1220]/90 border-b border-[var(--line)]">
+ <div class="max-w-[1500px] mx-auto px-4 py-2.5 flex flex-wrap items-center gap-3">
+  <div class="flex items-center gap-2">
+   <div class="w-8 h-8 rounded-lg grid place-items-center font-black text-xs" style="background:linear-gradient(135deg,#7c3aed,#155e75)">居</div>
+   <div><div class="font-extrabold text-sm leading-tight">거창고 대입 전형 <span style="color:var(--geo)">한눈에 보기</span></div>
+   <div class="text-[10px] muted">최저 × 면접 좌표평면 · 거창고 트랙 추가판</div></div>
+  </div>
+  <div class="ml-auto flex items-center gap-2 text-sm">
+   <div class="flex rounded-lg overflow-hidden border border-[var(--line)]">
+    <button id="t27" onclick="setY('27')" class="px-3 py-1.5 font-bold">27대입</button>
+    <button id="t28" onclick="setY('28')" class="px-3 py-1.5 font-bold">28대입</button><button id="tmed" onclick="setY('MED')" class="px-3 py-1.5 font-bold">의약</button></div>
+   <div class="flex items-center gap-1 border border-[var(--line)] rounded-lg px-2 py-1">
+    <input id="q" placeholder="대학 검색" onkeydown="if(event.key==='Enter')doSearch()" class="bg-transparent w-24 outline-none text-sm placeholder:text-slate-500">
+    <button onclick="doSearch()" class="text-xs px-2 py-0.5 rounded bg-[var(--geo)]/25 text-[var(--geo)] font-bold">찾기</button></div>
+   <button onclick="window.print()" class="px-3 py-1.5 rounded-lg font-bold" style="background:var(--geo)">인쇄·PDF</button>
+   <button onclick="toggleEdit()" class="px-3 py-1.5 rounded-lg border border-[var(--line)] font-bold">데이터</button>
+  </div>
+ </div>
+ <div class="max-w-[1500px] mx-auto px-4 pb-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]">
+  <span class="flex items-center gap-1"><b class="w-3 h-3 rounded border-2" style="border-color:var(--gyo)"></b>교과</span>
+  <span class="flex items-center gap-1"><b class="w-3 h-3 rounded border-2" style="border-color:var(--jong)"></b>종합</span>
+  <span class="flex items-center gap-1"><b class="w-3 h-3 rounded border-2" style="border-color:var(--non)"></b>논술</span>
+  <span class="flex items-center gap-1 j28"><b class="w-3 h-3 rounded border-2" style="border-color:var(--jeong)"></b>정시</span>
+  <span class="flex items-center gap-1"><b class="w-3 h-3 rounded ring-2 ring-[var(--geo)]"></b>거창고 빈출(수도권 외)</span>
+  <span class="flex items-center gap-1"><b class="text-[10px]">🎓</b>거창고 등록 수</span>
+  <span class="flex items-center gap-1"><b class="w-3 h-3 rounded unv"></b>숫자 미검증=모집요강 확인</span>
+  <span class="ml-auto muted">카드 클릭 → 입학처 ↗ · 논술=면접 없음 · 표시순서≠대학순위</span>
+ </div>
+</header>
+<div class="no-print max-w-[1500px] mx-auto px-4 mt-3">
+ <div class="rounded-xl border border-[var(--line)] bg-[var(--panel)] p-2.5 flex flex-wrap items-center gap-2 text-sm">
+  <span class="font-bold" style="color:var(--geo)">⭐ 거창고 합격대학 표시</span>
+  <input id="al" placeholder="3개년 합격 대학명 붙여넣기 — 예: 부산대, 경상국립대, 중앙대" class="flex-1 min-w-[240px] bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-1.5 outline-none">
+  <button onclick="applyAl()" class="px-3 py-1.5 rounded-lg bg-[var(--geo)]/25 text-[var(--geo)] font-bold">표시</button>
+  <button onclick="clearAl()" class="px-3 py-1.5 rounded-lg border border-[var(--line)]">지우기</button>
+  <span class="muted text-[11px] w-full">데이터는 이 화면 안에만 머뭅니다(외부 전송 없음).</span>
+ </div>
+</div><main class="max-w-[1500px] mx-auto px-4 mt-3"><section id="board"></section></main>
+<div id="ep" class="no-print hidden fixed inset-0 z-50 bg-black/70 grid place-items-center p-4">
+ <div class="bg-[var(--panel)] border border-[var(--line)] rounded-2xl w-full max-w-3xl max-h-[85vh] flex flex-col">
+  <div class="flex items-center justify-between p-3 border-b border-[var(--line)]"><b>데이터 편집 — <span id="ey">27</span>대입</b><button onclick="toggleEdit()" class="muted">닫기 ✕</button></div>
+  <textarea id="eb" spellcheck="false" class="flex-1 m-3 bg-[var(--bg)] border border-[var(--line)] rounded-lg p-3 font-mono text-xs outline-none"></textarea>
+  <div class="p-3 border-t border-[var(--line)] flex gap-2 text-sm">
+   <button onclick="applyEdit()" class="px-4 py-2 rounded-lg font-bold" style="background:var(--geo)">적용</button>
+   <button onclick="copyJSON()" class="px-4 py-2 rounded-lg border border-[var(--line)]">복사</button>
+   <span class="muted text-[11px] self-center">키: u 대학 / j 전형 / c 교과·종합·논술·정시 / m 반영비율 / min 수능최저 / geo 거창고 / region별 배열</span></div>
+ </div></div><footer class="max-w-[1500px] mx-auto px-4 mt-8 text-[11px] muted leading-relaxed">
+ 거창고 진학지도용 · 수도권 데이터는 6월 최종 기준 전사 · 🎓는 거창고 최근 등록 수(2023~26, 합격 데이터 집계) · 빈출 대학 트랙의 비율·최저는 모집요강 확인 필요.
+ <b class="text-red-400">반드시 각 대학 모집요강을 최종 확인하세요.</b></footer><script>
+// region: TL 최저O·일괄 / TR 최저O·면접·논술 / BL 최저X·일괄 / BR 최저X·면접
+// 정시(JS) 생기부(SB) 거창고추가(GEO)
+const C=(u,j,c,m,min,x={})=>({u,j,c,m,min,...x});
+const DATA={
+"27":{
+ TL:[
+  C("연세대","추천","교과","교과100","2합 4/5(1)영3"),
+  C("고려대","학추","교과","교과90,서류10","3합7(1)"),
+  C("고려대","학우","종합","서류100","4합8(1)"),
+  C("한양대","추천","교과","교과90,정성10","3합7(1)"),
+  C("서강대","지균","교과","교과100","3개 각3(1)"),
+  C("성균관대","추천","교과","정량70,정성30","3합6/7(2)"),
+  C("성균관대","융합","종합","학생부100","3합6(2)"),
+  C("한양대","추천(종합)","종합","학생부100","3합7(1)"),
+  C("이화여대","고교","교과","교과100","2합5(1)"),
+  C("이화여대","서류","종합","서류100","2합5(1)"),
+  C("중앙대","지균","교과","교과90,출결10","3합7(1)"),
+  C("경희대","지균","교과","교과70,교과종합30","2합5(2)"),
+  C("한국외대","학추","교과","교과100","2합4(1)"),
+  C("시립대","지균","교과","교과80,교과정성20","3합8(1)"),
+  C("홍익대","학추","교과","교과100","2합5(1)"),
+  C("홍익대","논술","논술","논술90,교과10","2합5(1)"),
+  C("홍익대","학우","종합","서류100","2합5(1)")
+ ],
+ TR:[
+  C("서울대","지균","종합","1단계70,면접30","3합7(2)"),
+  C("연세대","활우","종합","1단계60,면접40","2합 4/5(1)영3"),
+  C("중앙대","성장","종합","1단계70,면접30","3합6(1)"),
+  C("서강대","논술","논술","논술100","3합7(1)"),
+  C("성균관대","언/수","논술","논술100","3합6(2)"),
+  C("중앙대","일반","논술","논술70,교과20,출결10","3합6(1)"),
+  C("고려대","논술","논술","논술100","4합8(1)"),
+  C("이화여대","논술","논술","논술100","2합5(1)"),
+  C("경희대","논술","논술","논술100","2합5(1)"),
+  C("한국외대","논술","논술","논술100","2합4/글로벌6"),
+  C("한양대","논술","논술","논술100","3합7(1)"),
+  C("건국대","논술","논술","논술100","2합5(1)"),
+  C("동국대","논술","논술","논술70,교과20,출결10","2합5(1)"),
+  C("숙명여대","논술","논술","논술90,교과10","2합5(1)")
+ ],
+ BL:[
+  C("연세대","논술","논술","논술100",""),
+  C("서강대","일반1,2","종합","서류100",""),
+  C("성균관대","탐구","종합","서류100",""),
+  C("중앙대","융합","종합","서류100",""),
+  C("한양대","서류","종합","학생부100",""),
+  C("한국외대","SW,서류","종합","서류100",""),
+  C("시립대","서류","종합","서류100",""),
+  C("중앙대","창의","논술","논술70,교과20,출결10",""),
+  C("건국대","지균","교과","정량70,정성30",""),
+  C("동국대","학추","교과","정량70,정성30",""),
+  C("숙명여대","지균","교과","교과70,서류30",""),
+  C("시립대","논술","논술","논술80,교과20","")
+ ],
+ BR:[
+  C("서울대","일반","종합","1단계(2배수)50,면접50",""),
+  C("연세대","국제형","종합","1단계(4배수)60,면접40",""),
+  C("고려대","국방","종합","1단계60(5배수),면접20,기타20",""),
+  C("고려대","계적","종합","1단계(5배수)60,면접40",""),
+  C("성균관대","성균·과학인재","종합","1단계70,면접30",""),
+  C("한양대","면접","종합","1단계70(7배수),면접30",""),
+  C("이화여대","면접","종합","1단계70(5배수),면접30",""),
+  C("중앙대","탐구","종합","1단계70(3.5~5),면접30",""),
+  C("경희대","네오","종합","1단계70(3배수),면접30",""),
+  C("한국외대","면접","종합","1단계50(3배수),면접50",""),
+  C("시립대","면접","종합","1단계50(3배수),면접50",""),
+  C("건국대","자추","종합","1단계70(3배수),면접30",""),
+  C("동국대","두드림","종합","1단계70,면접30",""),
+  C("숙명여대","면접,SW","종합","1단계70,면접30","")
+ ],
+ JS:[],
+ GEO:[]
+},
+"28":{
+ TL:[
+  C("연세대","추천","교과","학생부80,서류20","2합 4/5(1)"),
+  C("한양대","추천","교과","교과60,종합40","3개3(1)"),
+  C("한양대","학업","종합","서류100","5과목중 3합7"),
+  C("서강대","지균","교과","교과90,출결10","3개 각3(1)"),
+  C("서강대","일반2","종합","서류100","3합7(1)"),
+  C("성균관대","추천","교과","정량70,정성30","5과목중 3합6/7"),
+  C("이화여대","추천","교과","교과85,서류15","3합7(1)"),
+  C("이화여대","미래","종합","서류100","3합7(1)"),
+  C("성균관대","융합","종합","학생부100","5과목중 3합6"),
+  C("중앙대","지균","교과","교과90,출결10","5과목중 3합7"),
+  C("경희대","지균","교과","교과56,출결7,봉사7,종합30","2합5(1)"),
+  C("경희대","서류","종합","서류100","2합5(1)"),
+  C("한국외대","학추","교과","교과70,서류30","2합5(1)"),
+  C("시립대","지균","교과","교과60,정성40","3합7(1)"),
+  C("건국대","지균","교과","교과70,정성30","3합8(1)"),
+  C("홍익대","교과","교과","교과95,출결5","2합5(1)"),
+  C("홍익대","서류","종합","서류100","2합5(1)"),
+  C("홍익대","논술","논술","논술90,교과10","2합5(1)")
+ ],
+ TR:[
+  C("연세대","종합","종합","1단계70,면접30","2합 4/5(1)"),
+  C("연세대","논술","논술","논술100","3합6(1)"),
+  C("고려대","학우","종합","1단계80,면접20","4합9(1)"),
+  C("고려대","논술","논술","논술100","4합8(1)"),
+  C("중앙대","최저","종합","1단계60,면접40","5과목중 3합6"),
+  C("서강대","논술","논술","논술80,교과10,출결10","3합7(1)"),
+  C("성균관대","언/수","논술","논술100","5과목중 3합5"),
+  C("한양대","논술","논술","논술90,출결10","3합7(1)"),
+  C("이화여대","논술","논술","논술100","3합7(1)"),
+  C("중앙대","모두","논술","논술80,교과10,출결10","5과목중 3합6"),
+  C("경희대","논술","논술","논술100","2합5(1)"),
+  C("한국외대","논술","논술","논술100","2합5(1)/글6"),
+  C("시립대","논술","논술","논술100","3합7(1)"),
+  C("건국대","논술","논술","논술100","3합8(1)"),
+  C("동국대","논술","논술","논70,교과20,출10","5과목중 2합5"),
+  C("숙명여대","논술","논술","논술85,학생부15","2합5(1)")
+ ],
+ BL:[
+  C("고려대","계적","종합","서류100",""),
+  C("고려대","학추","교과","교과80,서류20",""),
+  C("서강대","일반1","종합","서류100",""),
+  C("성균관대","탐구","종합","학생부100",""),
+  C("한국외대","서류,SW","종합","학생부100",""),
+  C("숙명여대","지균","교과","교과70,서류30",""),
+  C("중앙대","재학","논술","논술80,교과10,출결10",""),
+  C("동국대","학추","교과","교과70,서류30","")
+ ],
+ BR:[
+  C("서울대","지균","종합","1단계70,면접30",""),
+  C("서울대","일반","종합","1단계50,면접50",""),
+  C("연세대","탐구","종합","1단계60,면접40",""),
+  C("성균관대","성균·과학","종합","1단계70,면접30",""),
+  C("한양대","면접","종합","1단계70,면접30",""),
+  C("이화여대","면접","종합","1단계70,면접30",""),
+  C("중앙대","탐·모","종합","1단계60,면접40",""),
+  C("경희대","네오","종합","1단계70,면접30",""),
+  C("한국외대","면접","종합","1단계50,면접50",""),
+  C("시립대","종합","종합","1단계50,면접50",""),
+  C("건국대","자추","종합","1단계70,면접30",""),
+  C("동국대","두드림","종합","1단계60,면접40",""),
+  C("홍익대","면접","종합","1단계50,면접50",""),
+  C("숙명여대","면접","종합","1단계70,면접30","")
+ ],
+ JS:[
+  C("고려대","일반","정시","수능100",""),
+  C("고려대","교과","정시","수능80,교과20",""),
+  C("서강대","일반","정시","수능100",""),
+  C("서강대","지균","정시","수능80,교과10,출결10",""),
+  C("성균관대","일반","정시","수능100",""),
+  C("경희대","학생","정시","수능100",""),
+  C("경희대","일반","정시","수능90,비교과10",""),
+  C("한국외대","일반","정시","수능100",""),
+  C("건국대","일반","정시","수능100",""),
+  C("건국대","자전","정시","수능90,교과정성10",""),
+  C("이화여대","수능","정시","수능100",""),
+  C("이화여대","학생부","정시","수능85,서류15",""),
+  C("연세대","일반","정시","수능90,서류10",""),
+  C("중앙대","89","정시","수능89,출결11",""),
+  C("중앙대","67","정시","수능67,서류33",""),
+  C("한양대","수능","정시","수능90,서류10",""),
+  C("시립대","일반","정시","수능80,교과18,출결2",""),
+  C("홍익대","수능","정시","수능90,교과10",""),
+  C("동국대","일반","정시","수능80,서류20",""),
+  C("숙명여대","일반","정시","수능80,서류20",""),
+  C("서울대","일반(생기부)","정시","수능60,교과역량40","",{sb:1}),
+  C("성균관대","서류형(40명)","정시","서류100","5과목중 3합6",{sb:1})
+ ],
+ GEO:[]
+}
+};
+
+MEDDATA={"TL": [{"u": "연세대", "j": "추천(15)", "c": "교과", "m": "국수(미기)과1", "min": "2개1(국or수)"}, {"u": "가톨릭대", "j": "지균(10)", "c": "교과", "m": "국수영과(절)", "min": "4합5"}, {"u": "고려대", "j": "학추(18)", "c": "교과", "m": "국수영탐(1)", "min": "4합5"}, {"u": "경희대", "j": "지균(11)", "c": "교과", "m": "국수영탐(평)", "min": "3합4"}, {"u": "이화여대", "j": "서류(9)", "c": "종합", "m": "국수영탐(1)", "min": "4합5"}, {"u": "한양대", "j": "추천(40)", "c": "종합", "m": "국수영탐(평)", "min": "3합4"}, {"u": "아주대", "j": "추천(3)", "c": "교과", "m": "국수영탐(평)", "min": "4합6"}, {"u": "인하대", "j": "지균(9)", "c": "교과", "m": "국수영과(절)", "min": "3합4"}, {"u": "순천향대", "j": "교과(12)", "c": "교과", "m": "국수영탐(평)", "min": "4합6"}, {"u": "가톨릭관동", "j": "교과(20)", "c": "교과", "m": "국수(미기)영과(절)", "min": "3합4"}, {"u": "경북대", "j": "일반(25)", "c": "종합", "m": "국수영탐(평)", "min": "3합4(수포함)"}, {"u": "부산대", "j": "교과(10)", "c": "교과", "m": "국수영탐(평)", "min": "3합4(수포함)"}, {"u": "전북대", "j": "교과(21)", "c": "교과", "m": "국수(미기)영과(절)", "min": "4합5(수포함)"}, {"u": "제주대", "j": "교과(8)", "c": "교과", "m": "국수(미기)영과(절)", "min": "3합6(수포함)"}, {"u": "충남대", "j": "교과(12)", "c": "교과", "m": "국수(미기)영과(평)", "min": "3합4(수포함)"}, {"u": "충북대", "j": "교과(4)", "c": "교과", "m": "국수(미기)영과(1)", "min": "3합4(수포함)"}, {"u": "충북대", "j": "학종2(5)", "c": "종합", "m": "국수(미기)영과(1)", "min": "3합5(수포함)"}, {"u": "연세대(미)", "j": "추천(9)", "c": "종합", "m": "국수(미기)영과1,2", "min": "4합6(수포)재학"}, {"u": "연세대(미)", "j": "일반(9)", "c": "교과", "m": "국수(미기)영과1,2", "min": "4합5(수포함)"}, {"u": "조선대", "j": "일반(17)", "c": "교과", "m": "국수(미기)영과(1)", "min": "3합5(수포함)"}, {"u": "조선대", "j": "서류(6)", "c": "종합", "m": "국수(미기)영과(1)", "min": "3합5(수포함)"}, {"u": "영남대", "j": "일반(8)", "c": "교과", "m": "국수영과(1)", "min": "4합5"}, {"u": "건양대", "j": "일반(11)", "c": "교과", "m": "국수영과(절)", "min": "3합4"}, {"u": "고려대", "j": "학우(28)", "c": "종합", "m": "국수영탐(1)", "min": "4합5"}, {"u": "가천대", "j": "교과(4)", "c": "교과", "m": "국수(미기)영과(절)", "min": "3개1"}, {"u": "경상국립", "j": "일반(7)", "c": "교과", "m": "국수(미기)영과(절)", "min": "3합4(수포함)"}, {"u": "충남대", "j": "서류(6)", "c": "종합", "m": "국수(미기)영과(평)", "min": "3합5(수포함)"}, {"u": "동국대(W)", "j": "학업(3)", "c": "종합", "m": "국수영과(1)", "min": "3합4"}], "TR": [{"u": "서울대", "j": "지균(39)", "c": "종합", "m": "3배수 면접30", "min": "3합7(과,평)"}, {"u": "연세대", "j": "활우(45)", "c": "종합", "m": "4배수 면접40", "min": "1등급 2개(국or수)"}, {"u": "가톨릭대", "j": "학추(25)", "c": "종합", "m": "4배수 면접30", "min": "3합4(절)"}, {"u": "가톨릭대", "j": "논술(19)", "c": "논술", "m": "국수영과(절사)", "min": "3합4"}, {"u": "성균관대", "j": "수리(5)", "c": "논술", "m": "국수영탐(평)", "min": "4합5"}, {"u": "경희대", "j": "네오(25)", "c": "종합", "m": "4배수 면접30", "min": "3합4"}, {"u": "경희대", "j": "논술(19)", "c": "논술", "m": "국수영탐(평)", "min": "3합4"}, {"u": "이화여대", "j": "논술(5)", "c": "논술", "m": "국수영탐(1)", "min": "4합5"}, {"u": "중앙대", "j": "성장(4)", "c": "종합", "m": "5배수 면접30", "min": "4합5(영2=1)"}, {"u": "중앙대", "j": "일반(14)", "c": "논술", "m": "국수영탐(평)", "min": "4합5(영2=1)"}, {"u": "한양대", "j": "논술(8)", "c": "논술", "m": "국수영탐(평)", "min": "3합4"}, {"u": "아주대", "j": "ACE(17)", "c": "종합", "m": "3배수 면접30", "min": "4합6"}, {"u": "아주대", "j": "논술(10)", "c": "논술", "m": "국수영탐(평)", "min": "4합6"}, {"u": "가천대", "j": "의약(16)", "c": "종합", "m": "4배수 면접50", "min": "3개1"}, {"u": "가천대", "j": "논술(6)", "c": "논술", "m": "국수(미기)영과(절)", "min": "3개1"}, {"u": "인제대", "j": "교과(25)", "c": "교과", "m": "5배수 면접20", "min": "국수(미기)영과(1)각2"}, {"u": "한림대", "j": "학우(31)", "c": "종합", "m": "4배수 면접30", "min": "3합4"}, {"u": "경북대", "j": "AAT(8)", "c": "논술", "m": "국수영탐(평)", "min": "3합4(수포함)"}, {"u": "경상국립", "j": "일반(4)", "c": "종합", "m": "5배수 면접20", "min": "3합6(수포함)"}, {"u": "인하대", "j": "논술(8)", "c": "논술", "m": "국수영과(평)", "min": "3개1"}, {"u": "부산대", "j": "논술(5)", "c": "논술", "m": "국수영탐(평)", "min": "3합4(수포함)"}, {"u": "전남대", "j": "고교(10)", "c": "종합", "m": "6배수 면접30", "min": "3합5(수포함)"}, {"u": "충남대", "j": "면접(14)", "c": "종합", "m": "3배수 면접33.3", "min": "3합5"}, {"u": "고신대", "j": "일반(22)", "c": "교과", "m": "10배수 면접10", "min": "3합3/4(수포함)"}, {"u": "전북대", "j": "큰사람(5)", "c": "종합", "m": "3배수 면접20", "min": "4합6(수포함)"}, {"u": "영남대", "j": "창의(8)", "c": "교과", "m": "7배수 면접30", "min": "4합5"}, {"u": "대가대", "j": "교과(4)", "c": "교과", "m": "7배수 면접20", "min": "3합4(절)"}, {"u": "고신대", "j": "자추(5)", "c": "종합", "m": "10배수 면접20", "min": "3합4/5(수포함)"}, {"u": "연세대(미)", "j": "면접(21)", "c": "종합", "m": "6배수 면접30", "min": "4합5"}, {"u": "조선대", "j": "면접(6)", "c": "종합", "m": "5배수 면접30", "min": "3합5(수포함)"}, {"u": "단국대(천)", "j": "DKU(12)", "c": "종합", "m": "3배수 면접30", "min": "3합5(수포함)"}, {"u": "부산대", "j": "종합(30)", "c": "종합", "m": "4배수 면접20", "min": "3합4(수포함)"}, {"u": "울산대", "j": "잠재(10)", "c": "종합", "m": "4배수 면접50", "min": "3합4"}, {"u": "동국대(W)", "j": "참사람(3)", "c": "종합", "m": "5배수 면접30", "min": "3합4"}, {"u": "건국대(글)", "j": "자추(4)", "c": "종합", "m": "3배수 면접30", "min": "3합4"}, {"u": "계명대", "j": "일반(6)", "c": "교과", "m": "20배수 면접30·국수(미기)영과1", "min": "3합3"}, {"u": "계명대", "j": "면접(5)", "c": "교과", "m": "20배수 면접30·국수(미기)영과1", "min": "3합4(수포함)"}, {"u": "원광대", "j": "학종(10)", "c": "종합", "m": "5배수 면접23", "min": "3합6(수포함)"}], "BL": [{"u": "중앙대", "j": "창의(4)", "c": "논술", "m": "논70,교20,출10 재학생", "min": ""}, {"u": "순천향대", "j": "일반(10)", "c": "종합", "m": "", "min": ""}, {"u": "충북대", "j": "학종1(3)", "c": "종합", "m": "", "min": ""}], "BR": [{"u": "서울대", "j": "일반(50)", "c": "종합", "m": "2배수 면접50", "min": ""}, {"u": "가톨릭대", "j": "가톨릭지도자(2)", "c": "종합", "m": "4배수 면접30", "min": ""}, {"u": "성균관대", "j": "성균인재(20)", "c": "종합", "m": "6배수 면접30", "min": ""}, {"u": "고려대", "j": "계적(15)", "c": "종합", "m": "5배수 면접40", "min": ""}, {"u": "이화여대", "j": "면접(9)", "c": "종합", "m": "5배수 면접30", "min": ""}, {"u": "중앙대", "j": "융합(7)", "c": "종합", "m": "3.5배수 면접30", "min": ""}, {"u": "중앙대", "j": "탐구(15)", "c": "종합", "m": "3.5~5배수 면접30", "min": ""}, {"u": "한양대", "j": "면접(16)", "c": "종합", "m": "7배수 면접30(서류형이동)", "min": ""}, {"u": "인하대", "j": "면접(16)", "c": "종합", "m": "3배수 면접30", "min": ""}, {"u": "강원대", "j": "면접(5)", "c": "종합", "m": "3배수 면접40", "min": ""}]};
+DATA["MED"]=MEDDATA;
+let MEDMODE=false;
+const COL={교과:'var(--gyo)',종합:'var(--jong)',논술:'var(--non)',정시:'var(--jeong)'};
+const UURL={"서울대": "https://admission.snu.ac.kr", "연세대": "https://admission.yonsei.ac.kr", "고려대": "https://oku.korea.ac.kr", "서강대": "https://admission.sogang.ac.kr", "성균관대": "https://admission.skku.edu", "한양대": "https://go.hanyang.ac.kr", "이화여대": "https://admission.ewha.ac.kr", "중앙대": "https://admission.cau.ac.kr", "경희대": "https://iphak.khu.ac.kr", "한국외대": "https://adms.hufs.ac.kr", "시립대": "https://iphak.uos.ac.kr", "서울시립대": "https://iphak.uos.ac.kr", "건국대": "https://enter.konkuk.ac.kr", "동국대": "https://iphak.dongguk.edu", "홍익대": "https://admission.hongik.ac.kr", "숙명여대": "https://ipsi.sookmyung.ac.kr", "숭실대": "https://iphak.ssu.ac.kr", "세종대": "https://ipsi.sejong.ac.kr", "단국대": "https://ipsi.dankook.ac.kr", "아주대": "https://iajou.ajou.ac.kr", "인하대": "https://iphak.inha.ac.kr", "광운대": "https://iphak.kw.ac.kr", "명지대": "https://iphak.mju.ac.kr", "상명대": "https://admission.smu.ac.kr", "부산대": "https://go.pusan.ac.kr", "경북대": "https://ipsi1.knu.ac.kr", "전남대": "https://ao.jnu.ac.kr", "충남대": "https://ipsi.cnu.ac.kr", "전북대": "https://enter.jbnu.ac.kr", "강원대": "https://iphak.kangwon.ac.kr", "제주대": "https://ibsi.jejunu.ac.kr", "경상국립대": "https://new.gnu.ac.kr/new/main.do", "국민대": "https://admission.kookmin.ac.kr/main.php", "울산대": "https://iphak.ulsan.ac.kr/main", "청주교대": "https://www.cje.ac.kr/ipsi/", "대구대": "https://ipsi.daegu.ac.kr/kor", "충북대": "https://ipsi.chungbuk.ac.kr/", "DGIST": "https://www.dgist.ac.kr/adm/index.do", "가천대": "https://www.gachon.ac.kr/kor/index.do", "가톨릭대": "https://ipsi.catholic.ac.kr/main.do", "공주교대": "https://www.gjue.ac.kr/html/ipsi/index.html", "대구교대": "https://admission.dnue.ac.kr/ipsi/Main.do", "인천대": "https://admission.inu.ac.kr/main.do", "한동대": "https://admissions.handong.edu/"};
+function univUrl(n){return UURL[n]||("https://www.google.com/search?q="+encodeURIComponent(n+" 입학처"));}
+function goUniv(n){window.open(univUrl(n),'_blank','noopener');}
+let Y='27', AL=new Set();
+// 거창고 최근 등록 실적(2023~26, 통합_master 집계) — 추측 아님
+const REG={"서울대":23,"연세대":21,"고려대":56,"서강대":37,"성균관대":9,"한양대":8,"이화여대":10,"중앙대":25,"경희대":8,"한국외대":8,"시립대":2,"건국대":7,"동국대":2,"홍익대":2,"숙명여대":2,"부산대":21,"경상국립대":10,"경북대":12,"충남대":4,"전남대":3,"충북대":2,"울산대":3,"한동대":16,"포스텍":13,"DGIST":2,"진주교대":6,"한국교원대":5,"대구대":3,"순천대":2,"국민대":3,"인하대":3,"아주대":7,"단국대":4,"숭실대":4,"가천대":2,"세종대":2,"동덕여대":3,"청주교대":3,"경남대":2,"가톨릭대":2,"인천대":2,"공주교대":2,"대구교대":2};
+// 거창고가 지원한 전체 대학(지원 2+) 카테고리별 — 등록·지원수는 통합_master 집계, 비율·최저는 모집요강 확인
+const GEOGROUPS=[{"label": "과기원·특수대", "cards": [{"u": "KAIST", "reg": 0, "app": 13}, {"u": "포스텍", "reg": 13, "app": 34}, {"u": "UNIST", "reg": 1, "app": 9}, {"u": "GIST", "reg": 1, "app": 8}, {"u": "DGIST", "reg": 2, "app": 8}, {"u": "한동대", "reg": 16, "app": 28}]}, {"label": "거점·국립대", "cards": [{"u": "부산대", "reg": 21, "app": 123}, {"u": "경북대", "reg": 12, "app": 109}, {"u": "경상국립대", "reg": 10, "app": 35}, {"u": "충남대", "reg": 4, "app": 12}, {"u": "전남대", "reg": 3, "app": 7}, {"u": "전북대", "reg": 0, "app": 6}, {"u": "충북대", "reg": 2, "app": 11}, {"u": "강원대", "reg": 0, "app": 2}, {"u": "제주대", "reg": 1, "app": 5}, {"u": "부경대", "reg": 1, "app": 3}, {"u": "한국해양대", "reg": 1, "app": 5}, {"u": "경북대(상주)", "reg": 3, "app": 3}, {"u": "공주대", "reg": 0, "app": 3}, {"u": "창원대", "reg": 0, "app": 2}, {"u": "서울과기대", "reg": 0, "app": 5}]}, {"label": "교대·교원대", "cards": [{"u": "한국교원대", "reg": 5, "app": 9}, {"u": "진주교대", "reg": 6, "app": 8}, {"u": "청주교대", "reg": 3, "app": 5}, {"u": "공주교대", "reg": 2, "app": 4}, {"u": "대구교대", "reg": 2, "app": 4}, {"u": "부산교대", "reg": 1, "app": 6}, {"u": "서울교대", "reg": 0, "app": 5}, {"u": "경인교대", "reg": 0, "app": 4}, {"u": "전주교대", "reg": 0, "app": 3}, {"u": "춘천교대", "reg": 1, "app": 2}]}, {"label": "사관·특수목적", "cards": [{"u": "경찰대학", "reg": 2, "app": 2}, {"u": "육군사관학교", "reg": 2, "app": 2}, {"u": "해군사관학교", "reg": 1, "app": 2}, {"u": "공군사관학교", "reg": 1, "app": 3}, {"u": "한국항공대", "reg": 1, "app": 4}]}, {"label": "수도권 사립(추가)", "cards": [{"u": "아주대", "reg": 7, "app": 30}, {"u": "인하대", "reg": 3, "app": 10}, {"u": "단국대", "reg": 4, "app": 18}, {"u": "숭실대", "reg": 4, "app": 18}, {"u": "국민대", "reg": 3, "app": 15}, {"u": "세종대", "reg": 2, "app": 14}, {"u": "가천대", "reg": 2, "app": 11}, {"u": "명지대", "reg": 1, "app": 4}, {"u": "경기대", "reg": 1, "app": 5}, {"u": "광운대", "reg": 0, "app": 2}, {"u": "서경대", "reg": 0, "app": 2}, {"u": "삼육대", "reg": 0, "app": 2}, {"u": "강남대", "reg": 0, "app": 2}, {"u": "동덕여대", "reg": 3, "app": 5}, {"u": "서울여대", "reg": 1, "app": 3}, {"u": "성신여대", "reg": 0, "app": 3}, {"u": "덕성여대", "reg": 0, "app": 3}, {"u": "인천대", "reg": 2, "app": 3}, {"u": "한국외대(글)", "reg": 2, "app": 10}, {"u": "경희대(국제)", "reg": 1, "app": 14}]}, {"label": "지방 사립·의약", "cards": [{"u": "영남대", "reg": 1, "app": 3}, {"u": "계명대", "reg": 0, "app": 6}, {"u": "동아대", "reg": 1, "app": 4}, {"u": "대구대", "reg": 3, "app": 3}, {"u": "대구한의대", "reg": 1, "app": 4, "med": 1}, {"u": "대구가톨릭대", "reg": 2, "app": 2, "med": 1}, {"u": "울산대", "reg": 3, "app": 9, "med": 1}, {"u": "고신대", "reg": 1, "app": 4, "med": 1}, {"u": "가톨릭대", "reg": 2, "app": 6, "med": 1}, {"u": "순천향대", "reg": 0, "app": 2, "med": 1}, {"u": "한림대", "reg": 1, "app": 2, "med": 1}, {"u": "원광대", "reg": 0, "app": 2, "med": 1}, {"u": "총신대", "reg": 1, "app": 2}, {"u": "세명대", "reg": 0, "app": 2}, {"u": "상지대", "reg": 0, "app": 2}, {"u": "용인대", "reg": 2, "app": 2}, {"u": "경남대", "reg": 2, "app": 10}, {"u": "순천대", "reg": 2, "app": 2}, {"u": "동국대(WISE)", "reg": 1, "app": 3}]}, {"label": "분교 캠퍼스", "cards": [{"u": "고려대(세종)", "reg": 2, "app": 3}, {"u": "홍익대(세종)", "reg": 3, "app": 4}, {"u": "단국대(천안)", "reg": 2, "app": 3}, {"u": "중앙대(다빈치)", "reg": 2, "app": 2}, {"u": "건국대(글로컬)", "reg": 1, "app": 2}]}];
+function chipMin(x){
+ if(x.min) return '<span class="text-[10px] font-bold leading-none">'+x.min+'</span>';
+ if(x.geo) return '<span class="text-[9px] px-1 rounded unv leading-none">최저·비율 확인</span>';
+ return '<span class="text-[9px] muted leading-none">최저 없음</span>';
+}
+function card(x){
+ const col=COL[x.c]||'var(--muted)';
+ const ring=x.geo?'box-shadow:0 0 0 2px var(--geo)':'';
+ const star=AL.has(x.u)?'<span class="text-[10px]">⭐</span>':'';
+ const n=(x.reg!==undefined?x.reg:(MEDMODE?0:(REG[x.u]||0)));
+ let reg='';
+ if(n>0) reg='<span class="text-[9px] px-1 rounded font-bold" style="background:rgba(168,85,247,.25);color:#d8b4fe" title="거창고 최근 등록 '+n+'명">🎓'+n+'</span>';
+ else if(x.app) reg='<span class="text-[9px] px-1 rounded muted" title="거창고 지원 '+x.app+'명(등록 0)">지원'+x.app+'</span>';
+ const med=x.med?'<span class="text-[8px] px-1 rounded bg-pink-500/25 text-pink-300">의약</span>':'';
+ const nong=x.nong?'<span class="text-[8px] px-1 rounded text-white" style="background:var(--nong)">농어촌</span>':'';
+ return '<div class="card rounded-lg border-2 px-2 py-1 leading-tight cursor-pointer" onclick="goUniv(\''+x.u+'\')" title="'+x.u+' 입학처 바로가기 ↗" style="border-color:'+col+';'+ring+';background:var(--panel)" data-u="'+x.u+'">'
+  +'<div class="flex items-center gap-1 flex-wrap"><b class="text-[12px] underline decoration-dotted decoration-[var(--muted)] underline-offset-2">'+x.u+'</b><span class="text-[11px] muted">'+(x.j||'')+'</span>'+star+reg+med+nong+'</div>'
+  +(x.m?'<div class="text-[10px] muted leading-none mt-0.5">'+x.m+'</div>':'')
+  +'<div class="mt-0.5">'+chipMin(x)+'</div></div>';
+}
+function flow(arr){return arr.length?'<div class="flex flex-wrap gap-1.5">'+arr.map(card).join('')+'</div>':'<div class="muted text-[11px] italic py-2">해당 없음</div>';}
+function cell(title,sub,arr){
+ return '<div class="cell rounded-xl border border-[var(--line)] p-2.5 bg-[var(--panel)]/40">'
+  +'<div class="qh text-[12px] font-bold mb-1.5">'+title+' <span class="text-[10px] muted font-normal">'+sub+'</span></div>'+flow(arr)+'</div>';
+}
+function render(){
+ const d=DATA[Y];
+ MEDMODE=(Y==='MED');
+ let h='<div data-year="'+Y+'" class="active">';
+ const ttl = MEDMODE ? '거창고 27 의약 전형 분석' : '거창고 '+Y+'대입 전형 분석';
+ h+='<div class="flex items-end justify-between mb-2 ttl"><h1 class="text-xl font-black">'+ttl+'</h1>'
+  +'<span class="text-[11px] muted">세로축 ↑최저O ↓최저X · 가로축 ←일괄 면접/단계→</span></div>';
+ if(MEDMODE) h+='<div class="mb-2 text-[11px] rounded-lg p-2" style="background:rgba(239,68,68,.12);color:#fca5a5">⚠ 원본 기준: <b>지역인재·지역의사는 미포함</b>입니다(거창고 의약 핵심 루트라 모집요강 별도 확인). 괄호 안 숫자=모집인원 · 6월 최종 기준.</div>';
+ h+='<div class="grid lg:grid-cols-2 gap-2 mb-2">'
+  +cell('① 최저 O · 일괄','교과·종합·논술 한번에',d.TL)
+  +cell('② 최저 O · 면접/단계 · 논술','1단계+면접 / 논술',d.TR)
+  +cell('③ 최저 X · 일괄','수능 부담 없이',d.BL)
+  +cell('④ 최저 X · 면접/단계','면접 자신 있으면',d.BR)+'</div>';
+ if(d.JS&&d.JS.length) h+='<div class="strip rounded-xl border-2 p-2.5 mb-2" style="border-color:var(--jeong)">'
+  +'<div class="qh text-[12px] font-bold mb-1.5" style="color:var(--jeong)">🟢 정시 · 수능/생기부 위주 <span class="text-[10px] muted font-normal">28학년 통합형 수능 첫 적용</span></div>'+flow(d.JS)+'</div>';
+ if(Y!=='MED') h+='<div class="strip rounded-xl border-2 p-2.5" style="border-color:var(--geo)">'
+  +'<div class="qh text-[12px] font-bold mb-1.5" style="color:var(--geo)">🟣 거창고 지원 대학 전체 (수도권 메인 외) — 카테고리별 <span class="text-[10px] muted font-normal">🎓=거창고 등록 수 · 지원N=지원만(등록 0) · 농어촌 자격 510명은 정시·학종으로 수도권 진입 · 비율·최저·전형은 모집요강 확인(카드 클릭)</span></div>'
+  +GEOGROUPS.map(function(g){return '<div class="mb-2"><div class="text-[11px] font-bold muted mb-1">'+g.label+'</div>'+flow(g.cards.map(function(c){return Object.assign({geo:1,j:""},c);}))+'</div>';}).join('')+'</div>';
+ h+='</div>';
+ document.getElementById('board').innerHTML=h;
+ const a='text-white',i='muted';t27.className='px-3 py-1.5 font-bold '+(Y==='27'?a:i);t28.className='px-3 py-1.5 font-bold '+(Y==='28'?a:i);
+ t27.style.background=Y==='27'?'var(--geo)':'';t28.style.background=Y==='28'?'var(--geo)':'';tmed.className='px-3 py-1.5 font-bold '+(Y==='MED'?a:i);tmed.style.background=Y==='MED'?'var(--geo)':'';
+ document.querySelectorAll('.j28').forEach(e=>e.style.display=Y==='28'?'':'none');
+}
+function setY(y){Y=y;render();}
+function applyAl(){AL=new Set(document.getElementById('al').value.split(/[,\n、·\/]+/).map(s=>s.trim()).filter(Boolean));render();}
+function clearAl(){document.getElementById('al').value='';AL=new Set();render();}
+function doSearch(){const q=document.getElementById('q').value.trim();if(!q)return;
+ document.querySelectorAll('.card').forEach(e=>e.classList.remove('flash'));let f=null;
+ document.querySelectorAll('.card').forEach(e=>{if(e.dataset.u&&e.dataset.u.includes(q)){e.classList.add('flash');if(!f)f=e;}});
+ if(f)f.scrollIntoView({behavior:'smooth',block:'center'});else alert('"'+q+'"를 '+Y+'대입 표에서 찾지 못했습니다.');}
+function toggleEdit(){const p=document.getElementById('ep');if(p.classList.contains('hidden')){document.getElementById('ey').textContent=Y;document.getElementById('eb').value=JSON.stringify(DATA[Y],null,1);}p.classList.toggle('hidden');}
+function applyEdit(){try{const v=JSON.parse(document.getElementById('eb').value);DATA[Y]=v;render();toggleEdit();}catch(e){alert('JSON 오류: '+e.message);}}
+function copyJSON(){navigator.clipboard.writeText(document.getElementById('eb').value).then(()=>alert('복사됨'));}
+render();
+</script></body></html>
